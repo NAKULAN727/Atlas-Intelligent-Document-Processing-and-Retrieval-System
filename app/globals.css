@@ -2,7 +2,7 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1f2937; /* Gray 800 */
 }
 
 @theme inline {
@@ -12,32 +12,49 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #09090b;
-    --foreground: #ededed;
-  }
+/* Base body styles */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
 
-  /* -------------------------------------------------------------
-     GLOBAL DARK MODE OVERRIDES
-     These overrides ensure that hardcoded light-theme Tailwind classes 
-     (e.g., bg-slate-100, bg-white, text-black) render beautifully 
-     and legibly in dark mode without editing components one by one.
-     ------------------------------------------------------------- */
+/* -------------------------------------------------------------
+   GLOBAL DARK MODE OVERRIDES
+   These overrides ensure that hardcoded light-theme Tailwind classes 
+   render beautifully and legibly in dark mode (triggered by html.dark)
+   ------------------------------------------------------------- */
+html.dark {
+  --background: #09090b; /* Zinc 950 */
+  --foreground: #f4f4f5; /* Zinc 100 */
 
   /* Page Wrapper Backgrounds */
-  .bg-slate-100 {
+  .bg-slate-100,
+  .bg-slate-50 {
     background-color: var(--background) !important;
   }
 
   /* Card, Modal, and Panel Backgrounds */
   .bg-white {
-    background-color: #18181b !important; /* Zinc-900 equivalent */
+    background-color: #18181b !important; /* Zinc 900 */
   }
 
-  /* Text Colors */
+  /* Text Color Overrides for Visibility */
+  .text-slate-900,
+  .text-gray-900,
   .text-black {
     color: var(--foreground) !important;
+  }
+
+  .text-slate-500,
+  .text-gray-500 {
+    color: #a1a1aa !important; /* Zinc 400 */
+  }
+
+  .text-slate-400,
+  .text-gray-400 {
+    color: #cbd5e1 !important; /* Slate 300 */
   }
 
   /* Borders and Dividers */
@@ -49,13 +66,14 @@
   .border-slate-200,
   .border-gray-200,
   .border-gray-300 {
-    border-color: #27272a !important; /* Zinc-800 equivalent */
+    border-color: #27272a !important; /* Zinc 800 */
   }
 
   /* Hovers (e.g. Table Rows) */
   .hover\:bg-gray-50:hover,
-  .hover\:bg-slate-50:hover {
-    background-color: #27272a !important;
+  .hover\:bg-slate-50:hover,
+  .hover\:bg-slate-900:hover {
+    background-color: #27272a !important; /* Zinc 800 */
   }
 
   /* Form Elements & Inputs */
@@ -68,7 +86,7 @@
   }
 
   input::placeholder {
-    color: #71717a !important;
+    color: #71717a !important; /* Zinc 500 */
   }
 
   /* Stats Cards / Badges & Status Indication */
@@ -101,11 +119,19 @@
   .bg-blue-50 {
     background-color: rgba(59, 130, 246, 0.1) !important;
   }
+
+  /* Search Icon visibility */
+  .text-slate-400 {
+    color: #a1a1aa !important;
+  }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom fade-in animations for dynamic updates */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out forwards;
+}

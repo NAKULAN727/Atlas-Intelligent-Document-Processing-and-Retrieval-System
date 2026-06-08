@@ -1,4 +1,4 @@
-// components/dashboard/ActivityFeed.tsx
+"use client";
 
 import {
   FileText,
@@ -7,76 +7,75 @@ import {
   Trash2,
   UserPlus,
 } from "lucide-react";
+import { useDocuments } from "@/context/DocumentContext";
 
-const activities = [
-  {
-    icon: FileText,
-    text: "HR Policy.pdf uploaded",
-    time: "2 hrs ago",
-  },
-  {
-    icon: MessageSquare,
-    text: 'Asked "What is leave policy?"',
-    time: "1 hr ago",
-  },
-  {
-    icon: FolderPlus,
-    text: "Engineering Docs collection created",
-    time: "45 mins ago",
-  },
-  {
-    icon: Trash2,
-    text: "Old_Report.pdf deleted",
-    time: "30 mins ago",
-  },
-  {
-    icon: UserPlus,
-    text: "Sarah joined workspace",
-    time: "10 mins ago",
-  },
-];
+const iconMap = {
+  file: FileText,
+  message: MessageSquare,
+  folder: FolderPlus,
+  trash: Trash2,
+  user: UserPlus,
+};
 
 export default function ActivityFeed() {
+  const { activities } = useDocuments();
+
+  // Show the most recent 5 activities
+  const recentActivities = [...activities]
+    .sort((a, b) => b.createdAt - a.createdAt)
+    .slice(0, 5);
+
   return (
-    <div className="bg-white rounded-xl shadow-sm border p-6 h-full">
-      <div className="flex justify-between items-center mb-5">
-        <h2 className="text-xl font-semibold">
-          Activity Feed
-        </h2>
+    <div className="bg-white dark:bg-slate-950 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 h-full flex flex-col justify-between transition-colors duration-200">
+      <div>
+        <div className="flex justify-between items-center mb-5">
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
+            Activity Feed
+          </h2>
 
-        <button className="text-blue-600 text-sm">
-          View All
-        </button>
-      </div>
+          <button 
+            onClick={() => alert("All activity logs are loaded in this panel.")}
+            className="text-blue-600 text-sm font-medium hover:text-blue-700 transition cursor-pointer"
+          >
+            View All
+          </button>
+        </div>
 
-      <div className="space-y-5">
-        {activities.map((activity, index) => {
-          const Icon = activity.icon;
+        {recentActivities.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-10 text-center text-gray-500 animate-fadeIn">
+            <p className="text-sm">No activity recorded yet.</p>
+          </div>
+        ) : (
+          <div className="space-y-5">
+            {recentActivities.map((activity) => {
+              const Icon = iconMap[activity.iconType] || FileText;
 
-          return (
-            <div
-              key={index}
-              className="flex gap-3"
-            >
-              <div className="bg-blue-50 p-2 rounded-lg h-fit">
-                <Icon
-                  size={18}
-                  className="text-blue-600"
-                />
-              </div>
+              return (
+                <div
+                  key={activity.id}
+                  className="flex gap-3 animate-fadeIn"
+                >
+                  <div className="bg-blue-50 dark:bg-blue-900/30 p-2 rounded-lg h-fit">
+                    <Icon
+                      size={18}
+                      className="text-blue-600 dark:text-blue-400"
+                    />
+                  </div>
 
-              <div>
-                <p className="text-sm font-medium">
-                  {activity.text}
-                </p>
+                  <div>
+                    <p className="text-sm font-medium text-slate-950 dark:text-slate-200">
+                      {activity.text}
+                    </p>
 
-                <p className="text-xs text-gray-500">
-                  {activity.time}
-                </p>
-              </div>
-            </div>
-          );
-        })}
+                    <p className="text-xs text-gray-400 mt-0.5">
+                      {activity.time}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
